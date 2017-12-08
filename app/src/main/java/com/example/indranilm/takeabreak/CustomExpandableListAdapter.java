@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
@@ -20,11 +21,15 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity activity;
     private ArrayList<Object> children;
     private LayoutInflater inflater;
-    private ArrayList<String> groups, child;
+    private ArrayList<String> groups;
+    protected TimePicker timePicker;
+    protected TextView alarmTextView;
+    protected ToggleButton alarmToggle;
 
-    public CustomExpandableListAdapter(ArrayList<String> parents, ArrayList<Object> childern) {
+
+    public CustomExpandableListAdapter(ArrayList<String> parents, ArrayList<Object> children) {
         this.groups = parents;
-        this.children = childern;
+        this.children = children;
     }
 
     public void setInflater(LayoutInflater inflater, Activity activity) {
@@ -68,9 +73,14 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return false;
+    }
+
+    @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.custom_tab, null);
+            convertView = inflater.inflate(R.layout.custom_tabs, null);
         }
         ((CheckedTextView) convertView).setText(groups.get(groupPosition));
         ((CheckedTextView) convertView).setChecked(isExpanded);
@@ -79,31 +89,58 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        child = (ArrayList<String>) children.get(groupPosition);
-
-        TextView textView = null;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.custom_tabs, null);
+            if (groupPosition == 0) {
+                convertView = inflater.inflate(R.layout.custom_tab_quick_alarm, null);
+                this.timePicker = (TimePicker) convertView.findViewById(R.id.alarmTimePicker);
+                this.alarmTextView = (TextView) convertView.findViewById(R.id.alarmText);
+                this.alarmToggle = (ToggleButton) convertView.findViewById(R.id.alarmToggle);
+            }
+            if (groupPosition == 1){
+                convertView = inflater.inflate(R.layout.custom_tab_quick_alarm, null);
+            }
+            if (groupPosition == 2) {
+                convertView = inflater.inflate(R.layout.custom_tab_quick_alarm, null);
+            }
         }
 
-        textView = (TextView) convertView.findViewById(R.id.textView1);
-        textView.setText(child.get(childPosition));
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+
+        //textView = (TextView) convertView.findViewById(R.id.);
+        //textView.setText(child.get(childPosition));
+
+        /*convertView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity, child.get(childPosition),
                         Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         return convertView;
     }
 
-    @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+
+
+
+    /*public void onToggleClicked(View view) {
+        if (((ToggleButton) view).isChecked()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, alarmTimePicker.getCurrentHour());
+            calendar.set(Calendar.MINUTE, alarmTimePicker.getCurrentMinute());
+            Intent myIntent = new Intent(AlarmActivity.this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, myIntent, 0);
+            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.cancel(pendingIntent);
+            setAlarmText("");
+            Log.d("MyActivity", "Alarm Off");
+        }
     }
+
+    public void setAlarmText(String alarmText) {
+        alarmTextView.setText(alarmText);
+    }*/
 }
