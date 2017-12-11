@@ -18,7 +18,6 @@ import java.util.Calendar;
 
 public class MainActivity extends ExpandableListActivity {
 
-    private AlarmManagerBroadcastReceiver alarm;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
 
@@ -34,9 +33,8 @@ public class MainActivity extends ExpandableListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("start onCreate");
+        //System.out.println("start onCreate");
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
 
         ExpandableListView expandableList = getExpandableListView();
 
@@ -45,25 +43,21 @@ public class MainActivity extends ExpandableListActivity {
         expandableList.setClickable(true);
 
         setGroupParents();
-        setChildData();
 
-        adapter = new CustomExpandableListAdapter(groups, children);
-        adapter.setInflater((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+        adapter = new CustomExpandableListAdapter(groups);
+        adapter.setInflater((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE),this);
 
         expandableList.setAdapter(adapter);
         expandableList.setOnChildClickListener(this);
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        //alarm = new AlarmManagerBroadcastReceiver();
-        //Context context = this.getApplicationContext();
-        //alarm.SetAlarm(context, 10);
     }
 
 
     @Override
     protected void onStart() {
-        System.out.println("start onStart");
+        //System.out.println("start onStart");
         super.onStart();
         inst = this;
     }
@@ -82,21 +76,6 @@ public class MainActivity extends ExpandableListActivity {
         groups.add("Quick Alarm");
         groups.add("Settings");
         groups.add("View");
-    }
-
-    public void setChildData() {
-
-        ArrayList<String> child = new ArrayList<String>();
-        child.add("Set");
-        children.add(child);
-
-        child = new ArrayList<String>();
-        child.add("Settings");
-        children.add(child);
-
-        child = new ArrayList<String>();
-        child.add("List");
-        children.add(child);
     }
 
     public void onToggleClicked(View view) {
