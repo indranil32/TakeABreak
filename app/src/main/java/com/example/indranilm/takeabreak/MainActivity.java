@@ -1,28 +1,16 @@
 package com.example.indranilm.takeabreak;
 
-import android.app.AlarmManager;
 import android.app.ExpandableListActivity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.ToggleButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainActivity extends ExpandableListActivity {
 
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
-
     private ArrayList<String> groups = new ArrayList<String>();
-    private ArrayList<Object> children = new ArrayList<Object>();
     private CustomExpandableListAdapter adapter;
 
     private static MainActivity inst;
@@ -33,52 +21,53 @@ public class MainActivity extends ExpandableListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //System.out.println("start onCreate");
         super.onCreate(savedInstanceState);
 
-        ExpandableListView expandableList = getExpandableListView();
+        setGroupParents();
 
+        ExpandableListView expandableList = getExpandableListView();
         expandableList.setDividerHeight(2);
         expandableList.setGroupIndicator(null);
         expandableList.setClickable(true);
-
-        setGroupParents();
 
         adapter = new CustomExpandableListAdapter(groups);
         adapter.setInflater((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE),this);
 
         expandableList.setAdapter(adapter);
         expandableList.setOnChildClickListener(this);
-
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
     }
 
 
     @Override
     protected void onStart() {
-        //System.out.println("start onStart");
         super.onStart();
         inst = this;
     }
 
-    /*public void snooze(View view) {
-        System.out.println("start snooze");
-        Context context = this.getApplicationContext();
-        if (alarm != null)
-            alarm.CancelAlarm(context);
-        this.finish();
-        System.exit(0);
-    }*/
-
-
-    public void setGroupParents() {
-        groups.add("Quick Alarm");
+    private void setGroupParents() {
+        //groups.add("Quick Alarm");
         groups.add("Settings");
         groups.add("View");
     }
 
-    public void onToggleClicked(View view) {
+
+    /*
+    public void snooze(View view) {
+        System.out.println("start snooze");
+        this.adapter.cancelAlarm();
+    }
+
+
+    public void setOnetimeTimer(Context context, long time){
+        System.out.println("setOnetimeTimer");
+        AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
+        intent.putExtra(ONE_TIME, Boolean.TRUE);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi);
+    }
+
+   public void onToggleClicked(View view) {
         if (((ToggleButton) view).isChecked()) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, adapter.timePicker.getCurrentHour());
@@ -109,5 +98,5 @@ public class MainActivity extends ExpandableListActivity {
 
         alamNotificationBuilder.setContentIntent(contentIntent);
         alarmNotificationManager.notify(1, alamNotificationBuilder.build());
-    }
+    }*/
 }
